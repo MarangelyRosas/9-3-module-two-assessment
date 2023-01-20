@@ -49,36 +49,33 @@ fetch(BASE_URL)
 // Adding reviews  
 form.addEventListener('submit', (event) => {
     event.preventDefault();
-    const name = `${select.value}`;
-    const movieReview = document.querySelector('#review')
-    const reviewValue = movieReview.value
-    const list = document.createElement('li')
-    list.innerHTML = `<strong>${name}: </strong>${reviewValue}`;
-    const ul = document.querySelector('ul') 
-    ul.append(list);
-          
+
+    // Alerts if a user did not select a movie when creating a review
+    if(select.selectedIndex === 0) {
+        window.alert(`Please select a movie first`);
+
+    }else {
+        const name = `${select.value}`;
+        const movieReview = document.querySelector('#review')
+        const reviewValue = movieReview.value
+        const list = document.createElement('li')
+        list.innerHTML = `<strong>${name}: </strong>${reviewValue}`;
+        const ul = document.querySelector('ul') 
+        ul.append(list);
+
+        const listTwo = document.createElement("li")
+        listTwo.textContent = reviewValue
+        const unorderedList = document.createElement('ul')
+        unorderedList.append(listTwo)
+        movieReview.value = ''
+
 // Creating a Reset Reviews button that empties the content of the ul  
     const resetButton = document.querySelector('#reset-reviews')
     resetButton.addEventListener('click', (event) => {
         event.preventDefault()
          ul.innerHTML = ''
     }); 
-     
-// Alerts if a user did not select a movie when creating a review
-    if(select.value === '') {
-        const listTwo = document.createElement('li');
-        listTwo.textContent = reviewValue
-        const unorderedList = document.createElement('ul')
-        unorderedList.append(listTwo)
-        window.alert(`Please select a movie first`);
-
-    } else {
-        const listTwo = document.createElement("li")
-        listTwo.textContent = reviewValue
-        const unorderedList = document.createElement('ul')
-        unorderedList.append(listTwo)
-        movieReview.value = ''
-    }
+    } 
 })
 
 // Getting people for a movie: Generates an ordered list of people's names
