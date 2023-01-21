@@ -6,45 +6,58 @@
 
 // To ensure Cypress tests work as expeded, add any code/functions that you would like to run on page load inside this function
 
-
-function run() {
- // Add code you want to run on page load here
-    const BASE_URL = "https://resource-ghibli-api.onrender.com/films"
+const BASE_URL = "https://resource-ghibli-api.onrender.com/films"
     const PEOPLE_URL = "https://resource-ghibli-api.onrender.com/people/"
     const select = document.querySelector('select');
     const form = document.querySelector('form');
-    let movieData;
+    //let movieData;
+
+function run() {
+ // Add code you want to run on page load here
+    
 
 // Creating Dropdown Select Menu with select box containing the title of each movie populated from the API
 fetch(BASE_URL)
     .then((res) => res.json())
-    .then((data) => {
-        movieData = data
-    for(let i = 0; i < data.length; i++){
-        const title = data[i].title;
+    .then((movieData) => {
+        //movieData = data
+    for(let i = 0; i < movieData.length; i++){
+        //const title = data[i].title;
         const option = document.createElement('option');
-        option.textContent = title;
-        option.value = title;
         select.append(option);
+        option.textContent = movieData[i].title;
+        option.setAttribute('value', movieData[i].id);
 
-        select.addEventListener('change', (event) => {
-            event.preventDefault();
-// Creating a variable that will contain the movies' data (movieData) 
-            const foundData = movieData.find((elmnt) => elmnt.title === `${select.value}`);
-            const info = document.querySelector('#display-info');
-            info.innerHTML = ''
-            const h3 = document.createElement('h3')
-            const pTag = document.createElement('p')
-            const pTag2 = document.createElement('p')
-// Movie details section gets populated with movie description depending on the movie selected
-            h3.textContent = `${foundData.title}`
-            pTag.textContent = `${foundData.release_date}`
-            pTag2.innerHTML = `${foundData.description}`
-            info.append(h3, pTag, pTag2)
-        });
+        movieDescription(movieData);
     }
 })
- .catch((err) => console.log(err));
+.catch((err) => console.log(err));
+}
+    
+  
+function movieDescription(movieData) {
+    select.addEventListener('change', (event) => {
+        event.preventDefault();
+// Creating a variable that will contain the movies' data (movieData) 
+        //const foundData = movieData.find((elmnt) => elmnt.title === `${select.value}`);
+        const info = document.querySelector('#display-info');
+        info.innerHTML = ''
+        const h3 = document.createElement('h3')
+        const pTag = document.createElement('p')
+        const pTag2 = document.createElement('p')
+// Movie details section gets populated with movie description depending on the movie selected
+    for(let i = 0; i < movieData.length; i++){
+        if(select.value === movieData[i].id) {
+            h3.textContent = `${movieData[i].title}`
+            pTag.textContent = `${movieData[i].release_date}`
+            pTag2.innerHTML = `${movieData[i].description}`
+            info.append(h3, pTag, pTag2)
+        }
+
+    }
+    
+    });
+}
 
 // Adding reviews  
 form.addEventListener('submit', (event) => {
@@ -55,19 +68,20 @@ form.addEventListener('submit', (event) => {
         window.alert(`Please select a movie first`);
 
     }else {
-        const name = `${select.value}`;
+        const name = select[select.selectedIndex].innerHTML;
         const movieReview = document.querySelector('#review')
         const reviewValue = movieReview.value
         const list = document.createElement('li')
-        list.innerHTML = `<strong>${name}: </strong>${reviewValue}`;
+        list.innerHTML = `<strong><b>${name}: </b></strong>${reviewValue}`;
         const ul = document.querySelector('ul') 
         ul.append(list);
+        
+        form.reset();
 
-        const listTwo = document.createElement("li")
-        listTwo.textContent = reviewValue
-        const unorderedList = document.createElement('ul')
-        unorderedList.append(listTwo)
-        movieReview.value = ''
+        //list.textContent = reviewValue
+        //const unorderedList = document.createElement('ul')
+        //unorderedList.append(list)
+        
 
 // Creating a Reset Reviews button that empties the content of the ul  
     const resetButton = document.querySelector('#reset-reviews')
@@ -79,25 +93,25 @@ form.addEventListener('submit', (event) => {
 })
 
 // Getting people for a movie: Generates an ordered list of people's names
-const people = document.querySelector('#show-people');    
-people.addEventListener('click', (event) => {                
-    event.preventDefault();               
+const peopleButton = document.querySelector('#show-people');    
+peopleButton.addEventListener('click', (event) => {                
+    event.preventDefault(); 
+
     fetch(PEOPLE_URL)                    
         .then((response) => response.json())            
-        .then((people) => {                                
+        .then((peopleResult) => {                                
         const orderedListOfPeople = document.querySelector('#people-names');                
-    people.forEach((person) => {                                                       
+    peopleResult.forEach((person) => {                                                       
             const listPerson = document.createElement('li');                        
             listPerson.textContent = person.name;                        
             orderedListOfPeople.append(listPerson);                        
     });                
         });
-    
+    // Clears form input after submission of reviews
+    form.reset();
 });
         
-// Clears form input after submission of reviews
-    form.reset();
-};
+
 
 // This function will "pause" the functionality expected on load long enough to allow Cypress to fully load
 // So that testing can work as expected for now
