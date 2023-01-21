@@ -38,13 +38,13 @@ fetch(BASE_URL)
 function movieDescription(movieData) {
     select.addEventListener('change', (event) => {
         event.preventDefault();
-// Creating a variable that will contain the movies' data (movieData) 
-        //const foundData = movieData.find((elmnt) => elmnt.title === `${select.value}`);
+
         const info = document.querySelector('#display-info');
         info.innerHTML = ''
         const h3 = document.createElement('h3')
         const pTag = document.createElement('p')
         const pTag2 = document.createElement('p')
+
 // Movie details section gets populated with movie description depending on the movie selected
     for(let i = 0; i < movieData.length; i++){
         if(select.value === movieData[i].id) {
@@ -53,9 +53,7 @@ function movieDescription(movieData) {
             pTag2.innerHTML = `${movieData[i].description}`
             info.append(h3, pTag, pTag2)
         }
-
-    }
-    
+    }    
     });
 }
 
@@ -77,11 +75,6 @@ form.addEventListener('submit', (event) => {
         ul.append(list);
         
         form.reset();
-
-        //list.textContent = reviewValue
-        //const unorderedList = document.createElement('ul')
-        //unorderedList.append(list)
-        
 
 // Creating a Reset Reviews button that empties the content of the ul  
     const resetButton = document.querySelector('#reset-reviews')
@@ -111,7 +104,6 @@ peopleButton.addEventListener('click', (event) => {
     form.reset();
 });
         
-
 
 // This function will "pause" the functionality expected on load long enough to allow Cypress to fully load
 // So that testing can work as expected for now
